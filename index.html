@@ -1,61 +1,49 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ToDo List with Reminders - Portfolio</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo List with Reminders and Theme Switcher - Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 
 <body>
-  <div class="container">
-    <div id="confetti-container"></div>
-    <div id="motivation-toast" class="motivation-toast"></div>
+    <div class="container">
+        <div id="confetti-container"></div>
+        <div id="motivation-toast" class="motivation-toast"></div>
 
-    <div class="header">
-      <h1>ToDo List with Reminders</h1>
-      <button id="theme-toggle">Toggle Theme</button>
+        <div class="header">
+            <h1>ToDo List with Reminders</h1>
+            <button id="theme-toggle">Toggle Theme</button>
+        </div>
+
+        <!-- Прогресс-бар -->
+        <div id="progress-container" class="progress-container" style="display: none;">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+
+        <form id="task-form">
+            <input type="text" id="task-input" placeholder="Enter a new task..." required>
+            <div class="reminder-wrapper">
+                <svg class="calendar-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <input type="text" id="reminder-input" class="reminder-input" placeholder="Set reminder">
+            </div>
+            <button type="submit">Add</button>
+        </form>
+
+        <ul id="task-list"></ul>
     </div>
 
-
-    <!-- Фильтры -->
-    <div id="filters" class="filters">
-      <button data-filter="all" class="active">All</button>
-      <button data-filter="active">Active</button>
-      <button data-filter="completed">Completed</button>
-    </div>
-
-    <form id="task-form">
-      <input type="text" id="task-input" placeholder="Enter a new task..." required>
-      <input id="reminder-input" type="text" placeholder="Select date & time">
-
-      <div class="reminder-wrapper">
-        <svg class="calendar-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-color)"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-          <line x1="16" y1="2" x2="16" y2="6"></line>
-          <line x1="8" y1="2" x2="8" y2="6"></line>
-          <line x1="3" y1="10" x2="21" y2="10"></line>
-        </svg>
-        <input type="datetime-local" id="reminder-input" class="reminder-input" lang="en">
-      </div>
-      <button type="submit">Add</button>
-    </form>
-
-    <ul id="task-list"></ul>
-
-    <!-- Прогресс-бар -->
-    <div class="progress-container">
-      <div id="progress-bar" class="progress-bar">0 / 0</div>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>

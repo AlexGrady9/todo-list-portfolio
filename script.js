@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const motivationToast = document.getElementById('motivation-toast');
     const themeToggle = document.getElementById('theme-toggle');
     const confettiContainer = document.getElementById('confetti-container');
-    const enableNotificationsBtn = document.getElementById('enable-notifications'); // Если добавили кнопку для уведомлений
+    const enableNotificationsBtn = document.getElementById('enable-notifications'); // Кнопка для уведомлений
 
     // Массив мотивирующих сообщений
     const motivationalMessages = [
@@ -16,31 +16,40 @@ document.addEventListener('DOMContentLoaded', () => {
         "One step closer to your goals!",
         "Amazing work! Stay focused!",
         "You're unstoppable today!",
-        "Nice one! Keep pushing forward",
+        "Nice one! Keep pushing forward!"
     ];
 
-    // Инициализация Flatpickr для календаря на английском
+    // Инициализация Flatpickr с улучшенной обработкой
     if (reminderInput) {
-        flatpickr(reminderInput, {
+        const fp = flatpickr(reminderInput, {
             enableTime: true,
             dateFormat: "m/d/Y h:i K", // Формат MM/DD/YYYY, HH:MM AM/PM
             time_24hr: false,
             locale: "en", // Английский язык
-            defaultDate: new Date(), // Текущая дата (09/09/2025, 08:37 PM KST)
-            onClose: function() {
-                reminderInput.classList.remove('visible'); // Закрываем поле после выбора
+            defaultDate: new Date(), // Текущая дата (09/09/2025, 09:17 PM KST)
+            onClose: function(selectedDates, dateStr, instance) {
+                reminderInput.classList.remove('visible'); // Закрываем поле
+                console.log('Flatpickr closed with value:', dateStr); // Отладка: значение после закрытия
+                if (selectedDates.length === 0 || !dateStr) {
+                    console.warn('No valid date selected'); // Отладка: нет валидной даты
+                }
+            },
+            onChange: function(selectedDates, dateStr, instance) {
+                if (selectedDates.length > 0) {
+                    console.log('Valid date changed to:', dateStr); // Отладка: валидная дата
+                }
             }
         });
     }
 
-    // Загрузка темы из LocalStorage
+    // Загрузка темы
     let currentTheme = localStorage.getItem('theme') || 'dark';
     document.body.classList.toggle('light-theme', currentTheme === 'light');
     if (themeToggle) {
         themeToggle.textContent = currentTheme === 'light' ? 'Switch to Dark Theme' : 'Switch to Light Theme';
-        console.log('Theme loaded:', currentTheme); // Отладка: загруженная тема
+        console.log('Theme loaded:', currentTheme); // Отладка
     } else {
-        console.error('Theme toggle button not found'); // Отладка: кнопка темы не найдена
+        console.error('Theme toggle button not found'); // Отладка
     }
 
     // Переключение темы
@@ -51,17 +60,17 @@ document.addEventListener('DOMContentLoaded', () => {
             currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
             localStorage.setItem('theme', currentTheme);
             themeToggle.textContent = currentTheme === 'light' ? 'Switch to Dark Theme' : 'Switch to Light Theme';
-            console.log('Theme switched to:', currentTheme); // Отладка: тема переключена
+            console.log('Theme switched to:', currentTheme); // Отладка
         });
     }
 
-    // Запрос разрешения на уведомления по кнопке
+    // Запрос разрешения на уведомления
     if (enableNotificationsBtn) {
         enableNotificationsBtn.addEventListener('click', (e) => {
             e.preventDefault();
             if (Notification.permission !== 'granted') {
                 Notification.requestPermission().then(permission => {
-                    console.log('Notification permission:', permission); // Отладка: статус разрешения уведомлений
+                    console.log('Notification permission:', permission); // Отладка
                     if (permission === 'granted') {
                         enableNotificationsBtn.textContent = 'Reminders Enabled!';
                         enableNotificationsBtn.style.background = 'var(--complete-btn-bg)';
@@ -71,18 +80,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Загрузка задач из LocalStorage
+    // Загрузка задач
     let tasks = [];
     try {
-        tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-        console.log('Initial tasks loaded:', tasks); // Отладка: загруженные задачи
+        const storedTasks = localStorage.getItem('tasks');
+        tasks = storedTasks ? JSON.parse(storedTasks) : [];
+        console.log('Initial tasks loaded:', tasks); // Отладка
     } catch (e) {
-        console.error('Error loading tasks from LocalStorage:', e); // Отладка: ошибка загрузки задач
+        console.error('Error loading tasks from LocalStorage:', e); // Отладка
     }
     renderTasks();
     setupReminders();
 
-    // Показ/скрытие поля календаря (с Flatpickr оно открывается автоматически, но для иконки)
+    // Показ/скрытие календаря
     if (calendarIcon) {
         calendarIcon.addEventListener('click', (e) => {
             e.preventDefault();
@@ -90,82 +100,96 @@ document.addEventListener('DOMContentLoaded', () => {
             reminderInput.classList.toggle('visible');
             if (reminderInput.classList.contains('visible')) {
                 reminderInput.focus();
-                console.log('Calendar opened'); // Отладка: календарь открыт
+                console.log('Calendar opened'); // Отладка
             } else {
-                console.log('Calendar closed'); // Отладка: календарь закрыт
+                console.log('Calendar closed'); // Отладка
             }
         });
     } else {
-        console.error('Calendar icon not found'); // Отладка: иконка календаря не найдена
+        console.error('Calendar icon not found'); // Отладка
     }
 
-    // Скрытие календаря при клике вне поля
+    // Скрытие календаря при клике вне
     document.addEventListener('click', (e) => {
         if (!reminderInput.contains(e.target) && !calendarIcon.contains(e.target)) {
             reminderInput.classList.remove('visible');
-            console.log('Calendar closed (outside click)'); // Отладка: календарь закрыт при клике вне
+            console.log('Calendar closed (outside click)'); // Отладка
         }
     });
 
-    // Добавление задачи
+    // Добавление задачи с улучшенной валидацией
     if (taskForm) {
         taskForm.addEventListener('submit', (e) => {
             e.preventDefault();
             e.stopPropagation();
             const taskText = taskInput.value.trim();
-            const reminderTime = reminderInput.value;
-            if (taskText) {
-                const newTask = {
-                    text: taskText,
-                    completed: false,
-                    reminder: reminderTime || null
-                };
-                tasks.push(newTask);
-                console.log('Task added:', newTask); // Отладка: задача добавлена
-                saveTasks();
-                renderTasks();
-                setupReminders();
-                taskInput.value = '';
-                reminderInput.value = '';
-                reminderInput.classList.remove('visible');
-            } else {
-                console.log('Empty task input'); // Отладка: пустой ввод
+            let reminderTime = reminderInput.value.trim();
+
+            if (!taskText) {
+                console.log('Empty task input'); // Отладка
+                return;
             }
+
+            let reminderDate = null;
+            if (reminderTime) {
+                try {
+                    reminderDate = flatpickr.parseDate(reminderTime, "m/d/Y h:i K");
+                    if (!reminderDate || isNaN(reminderDate.getTime())) {
+                        console.error('Invalid reminder time format:', reminderTime); // Отладка
+                        alert('Please enter a valid time (e.g., 09/09/2025 09:17 PM)');
+                        return;
+                    }
+                    console.log('Parsed reminder date:', reminderDate); // Отладка
+                } catch (e) {
+                    console.error('Error parsing reminder time:', e); // Отладка
+                    alert('Please enter a valid time (e.g., 09/09/2025 09:17 PM)');
+                    return;
+                }
+            }
+
+            const newTask = {
+                text: taskText,
+                completed: false,
+                reminder: reminderDate ? reminderDate.toISOString() : null
+            };
+            tasks.push(newTask);
+            console.log('Task added:', newTask); // Отладка
+            saveTasks();
+            renderTasks();
+            setupReminders();
+            taskInput.value = '';
+            reminderInput.value = '';
+            reminderInput.classList.remove('visible');
         });
     } else {
-        console.error('Task form not found'); // Отладка: форма не найдена
+        console.error('Task form not found'); // Отладка
     }
 
-    // Показ мотивирующего сообщения и анимации хлопушки
+    // Показ мотивирующего сообщения и анимации
     function showMotivationMessage() {
         const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
         if (motivationToast) {
             motivationToast.textContent = randomMessage;
             motivationToast.classList.add('show');
-            setTimeout(() => {
-                motivationToast.classList.remove('show');
-            }, 3000); // Сообщение видно 3 секунды
-            console.log('Motivation message shown:', randomMessage); // Отладка: мотивационное сообщение
+            setTimeout(() => motivationToast.classList.remove('show'), 3000);
+            console.log('Motivation message shown:', randomMessage); // Отладка
         } else {
-            console.error('Motivation toast not found'); // Отладка: тост не найден
+            console.error('Motivation toast not found'); // Отладка
         }
 
-        // Анимация хлопушки
         if (confettiContainer) {
-            confettiContainer.innerHTML = ''; // Очищаем предыдущие частицы
+            confettiContainer.innerHTML = '';
             for (let i = 0; i < 20; i++) {
                 const confetti = document.createElement('div');
                 confetti.classList.add('confetti');
-                confetti.style.left = `${Math.random() * 100}%`; // Случайная позиция по горизонтали
-                confetti.style.animationDelay = `${Math.random() * 0.5}s`; // Случайная задержка
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.animationDelay = `${Math.random() * 0.5}s`;
                 confettiContainer.appendChild(confetti);
             }
-            setTimeout(() => {
-                confettiContainer.innerHTML = ''; // Очистка частиц после анимации
-            }, 2000); // Частицы исчезают через 2 секунды
-            console.log('Confetti animation triggered'); // Отладка: анимация хлопушки
+            setTimeout(() => confettiContainer.innerHTML = '', 2000);
+            console.log('Confetti animation triggered'); // Отладка
         } else {
-            console.error('Confetti container not found'); // Отладка: контейнер хлопушки не найден
+            console.error('Confetti container not found'); // Отладка
         }
     }
 
@@ -187,7 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     try {
                         const reminderDate = new Date(task.reminder);
                         if (!isNaN(reminderDate.getTime())) {
-                            // Форматирование на английском (en-US)
                             reminderDisplay.textContent = `Reminder: ${reminderDate.toLocaleString('en-US', {
                                 month: '2-digit',
                                 day: '2-digit',
@@ -198,28 +221,24 @@ document.addEventListener('DOMContentLoaded', () => {
                             })}`;
                             taskContent.appendChild(reminderDisplay);
                         } else {
-                            console.warn('Invalid reminder date for task:', task); // Отладка: некорректная дата
+                            console.warn('Invalid reminder date for task:', task); // Отладка
                         }
                     } catch (e) {
-                        console.error('Error parsing reminder date:', e); // Отладка: ошибка парсинга даты
+                        console.error('Error parsing reminder date:', e); // Отладка
                     }
                 }
 
-                // Кнопка завершения
                 const completeBtn = document.createElement('button');
                 completeBtn.textContent = task.completed ? 'Undo' : 'Complete';
                 completeBtn.onclick = (e) => {
                     e.preventDefault();
                     tasks[index].completed = !tasks[index].completed;
-                    if (tasks[index].completed) {
-                        showMotivationMessage();
-                    }
+                    if (tasks[index].completed) showMotivationMessage();
                     saveTasks();
                     renderTasks();
-                    console.log('Task completed:', tasks[index]); // Отладка: задача завершена
+                    console.log('Task completed:', tasks[index]); // Отладка
                 };
 
-                // Кнопка удаления
                 const deleteBtn = document.createElement('button');
                 deleteBtn.textContent = 'Delete';
                 deleteBtn.onclick = (e) => {
@@ -227,15 +246,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     tasks.splice(index, 1);
                     saveTasks();
                     renderTasks();
-                    console.log('Task deleted:', index); // Отладка: задача удалена
+                    console.log('Task deleted:', index); // Отладка
                 };
 
                 li.append(taskContent, completeBtn, deleteBtn);
                 taskList.appendChild(li);
             });
-            console.log('Tasks rendered:', tasks); // Отладка: задачи отрендерены
+            console.log('Tasks rendered:', tasks); // Отладка
         } else {
-            console.error('Task list not found'); // Отладка: список задач не найден
+            console.error('Task list not found'); // Отладка
         }
     }
 
@@ -243,9 +262,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function saveTasks() {
         try {
             localStorage.setItem('tasks', JSON.stringify(tasks));
-            console.log('Tasks saved:', tasks); // Отладка: задачи сохранены
+            console.log('Tasks saved:', tasks); // Отладка
         } catch (e) {
-            console.error('Error saving tasks to LocalStorage:', e); // Отладка: ошибка сохранения задач
+            console.error('Error saving tasks to LocalStorage:', e); // Отладка
         }
     }
 
@@ -261,14 +280,14 @@ document.addEventListener('DOMContentLoaded', () => {
                             if (Notification.permission === 'granted' && !task.completed) {
                                 new Notification('Task Reminder', {
                                     body: task.text,
-                                    icon: 'https://via.placeholder.com/32' // Можно заменить на свой значок
+                                    icon: 'https://via.placeholder.com/32'
                                 });
-                                console.log('Reminder triggered:', task.text); // Отладка: напоминание сработало
+                                console.log('Reminder triggered:', task.text); // Отладка
                             }
                         }, reminderTime - now);
                     }
                 } catch (e) {
-                    console.error('Error setting up reminder:', e); // Отладка: ошибка настройки напоминания
+                    console.error('Error setting up reminder:', e); // Отладка
                 }
             }
         });

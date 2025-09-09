@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const taskForm = document.getElementById('task-form');
     const taskInput = document.getElementById('task-input');
-    const reminderInput = document.getElementById('reminder-input');
     const calendarIcon = document.querySelector('.calendar-icon');
     const taskList = document.getElementById('task-list');
     const motivationToast = document.getElementById('motivation-toast');
@@ -19,27 +18,56 @@ document.addEventListener('DOMContentLoaded', () => {
         "Nice one! Keep pushing forward!"
     ];
 
-    // Инициализация Flatpickr с улучшенной обработкой
-    if (reminderInput) {
-        const fp = flatpickr(reminderInput, {
+    // Внутренний элемент для хранения выбранного времени (скрытый)
+    let selectedReminder = null;
+    let flatpickrInstance = null;
+
+    // Инициализация Flatpickr, привязанного к иконке
+    if (calendarIcon) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.style.display = 'none'; // Скрываем элемент
+        document.body.appendChild(input);
+
+        flatpickrInstance = flatpickr(input, {
             enableTime: true,
-            dateFormat: "m/d/Y h:i K", // Формат MM/DD/YYYY, HH:MM AM/PM
+            dateFormat: "m/d/Y h:i K", // MM/DD/YYYY, HH:MM AM/PM
             time_24hr: false,
             locale: "en", // Английский язык
-            defaultDate: new Date(), // Текущая дата (09/09/2025, 09:17 PM KST)
-            onClose: function(selectedDates, dateStr, instance) {
-                reminderInput.classList.remove('visible'); // Закрываем поле
-                console.log('Flatpickr closed with value:', dateStr); // Отладка: значение после закрытия
-                if (selectedDates.length === 0 || !dateStr) {
-                    console.warn('No valid date selected'); // Отладка: нет валидной даты
-                }
-            },
+            defaultDate: new Date(), // Текущая дата (09/09/2025, 09:55 PM KST)
             onChange: function(selectedDates, dateStr, instance) {
                 if (selectedDates.length > 0) {
-                    console.log('Valid date changed to:', dateStr); // Отладка: валидная дата
+                    selectedReminder = selectedDates[0]; // Сохраняем выбранную дату
+                    console.log('Selected reminder:', dateStr); // Отладка
                 }
+            },
+            onClose: function(selectedDates, dateStr, instance) {
+                console.log('Calendar closed, selected:', dateStr); // Отладка
             }
         });
+
+        calendarIcon.addEventListener('mouseover', (e) => {
+            if (window.innerWidth > 600) { // Показываем только на десктопе при наведении
+                flatpickrInstance.open();
+                console.log('Calendar opened on hover'); // Отладка
+            }
+        });
+
+        calendarIcon.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            flatpickrInstance.open(); // Открываем календарь при клике (для смартфонов и десктопа)
+            console.log('Calendar opened on click'); // Отладка
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!calendarIcon.contains(e.target)) {
+                flatpickrInstance.close(); // Закрываем при клике вне иконки
+                console.log('Calendar closed (outside click)'); // Отладка
+            }
+        });
+    } else {
+        console.error('Calendar icon not found'); // Отладка
     }
 
     // Загрузка темы
@@ -92,65 +120,22 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTasks();
     setupReminders();
 
-    // Показ/скрытие календаря
-    if (calendarIcon) {
-        calendarIcon.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            reminderInput.classList.toggle('visible');
-            if (reminderInput.classList.contains('visible')) {
-                reminderInput.focus();
-                console.log('Calendar opened'); // Отладка
-            } else {
-                console.log('Calendar closed'); // Отладка
-            }
-        });
-    } else {
-        console.error('Calendar icon not found'); // Отладка
-    }
-
-    // Скрытие календаря при клике вне
-    document.addEventListener('click', (e) => {
-        if (!reminderInput.contains(e.target) && !calendarIcon.contains(e.target)) {
-            reminderInput.classList.remove('visible');
-            console.log('Calendar closed (outside click)'); // Отладка
-        }
-    });
-
-    // Добавление задачи с улучшенной валидацией
+    // Добавление задачи
     if (taskForm) {
         taskForm.addEventListener('submit', (e) => {
             e.preventDefault();
             e.stopPropagation();
             const taskText = taskInput.value.trim();
-            let reminderTime = reminderInput.value.trim();
 
             if (!taskText) {
                 console.log('Empty task input'); // Отладка
                 return;
             }
 
-            let reminderDate = null;
-            if (reminderTime) {
-                try {
-                    reminderDate = flatpickr.parseDate(reminderTime, "m/d/Y h:i K");
-                    if (!reminderDate || isNaN(reminderDate.getTime())) {
-                        console.error('Invalid reminder time format:', reminderTime); // Отладка
-                        alert('Please enter a valid time (e.g., 09/09/2025 09:17 PM)');
-                        return;
-                    }
-                    console.log('Parsed reminder date:', reminderDate); // Отладка
-                } catch (e) {
-                    console.error('Error parsing reminder time:', e); // Отладка
-                    alert('Please enter a valid time (e.g., 09/09/2025 09:17 PM)');
-                    return;
-                }
-            }
-
             const newTask = {
                 text: taskText,
                 completed: false,
-                reminder: reminderDate ? reminderDate.toISOString() : null
+                reminder: selectedReminder ? selectedReminder.toISOString() : null
             };
             tasks.push(newTask);
             console.log('Task added:', newTask); // Отладка
@@ -158,8 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderTasks();
             setupReminders();
             taskInput.value = '';
-            reminderInput.value = '';
-            reminderInput.classList.remove('visible');
+            selectedReminder = null; // Сбрасываем выбранное время
         });
     } else {
         console.error('Task form not found'); // Отладка

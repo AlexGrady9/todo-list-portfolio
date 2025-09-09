@@ -127,17 +127,20 @@ h1 {
     position: fixed;
     top: 20px;
     right: 20px;
-    padding: 4px 8px;
+    width: 36px;
+    height: 36px;
     background: var(--primary-btn-bg);
     color: white;
     border: none;
-    border-radius: var(--border-radius);
+    border-radius: 50%;
     cursor: pointer;
-    font-size: 0.8rem;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     transition: background 0.3s, transform 0.2s;
     z-index: 1000;
-    white-space: nowrap;
 }
 
 #theme-toggle:hover {
@@ -280,9 +283,8 @@ button:hover {
     }
 
     #theme-toggle {
-        top: 15px;
-        right: 15px;
-        padding: 3px 6px;
-        font-size: 0.7rem;
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
     }
 }

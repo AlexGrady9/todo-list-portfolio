@@ -33,14 +33,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Переключение темы
     if (themeToggle) {
-        themeToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.body.classList.toggle('light-theme');
-            currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
-            localStorage.setItem('theme', currentTheme);
-            themeToggle.textContent = currentTheme === 'light' ? 'Light Theme' : 'Dark Theme';
-        });
-    }
+    themeToggle.textContent = currentTheme === 'light' ? '☀️' : '🌙';
+}
+
+if (themeToggle) {
+    themeToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.body.classList.toggle('light-theme');
+        currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+        localStorage.setItem('theme', currentTheme);
+        themeToggle.textContent = currentTheme === 'light' ? '☀️' : '🌙';
+    });
+}
+
 
     // Инициализация Flatpickr для календаря
     if (reminderInput && calendarIcon) {

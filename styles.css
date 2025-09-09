@@ -127,16 +127,17 @@ h1 {
     position: fixed;
     top: 20px;
     right: 20px;
-    padding: 6px 12px;
+    padding: 4px 8px;
     background: var(--primary-btn-bg);
     color: white;
     border: none;
     border-radius: var(--border-radius);
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: 500;
     transition: background 0.3s, transform 0.2s;
     z-index: 1000;
+    white-space: nowrap;
 }
 
 #theme-toggle:hover {
@@ -172,7 +173,7 @@ h1 {
 
 .reminder-wrapper {
     position: relative;
-    display: inline-flex;
+    display: flex;
     align-items: center;
 }
 
@@ -281,7 +282,7 @@ button:hover {
     #theme-toggle {
         top: 15px;
         right: 15px;
-        padding: 4px 8px;
-        font-size: 0.8rem;
+        padding: 3px 6px;
+        font-size: 0.7rem;
     }
 }

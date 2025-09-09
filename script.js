@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     reminderInput.type = 'text';
     reminderInput.id = 'reminder-input';
     reminderInput.style.display = 'none';
+    reminderInput.style.position = 'absolute';
+    reminderInput.style.opacity = '0';
     document.querySelector('.reminder-wrapper').appendChild(reminderInput);
     const calendarIcon = document.querySelector('.calendar-icon');
     const taskList = document.getElementById('task-list');
@@ -26,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentTheme = localStorage.getItem('theme') || 'dark';
     document.body.classList.toggle('light-theme', currentTheme === 'light');
     if (themeToggle) {
-        themeToggle.textContent = currentTheme === 'light' ? 'Switch to Dark Theme' : 'Switch to Light Theme';
+        themeToggle.textContent = currentTheme === 'light' ? 'Light Theme' : 'Dark Theme';
     }
 
     // Переключение темы
@@ -36,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.toggle('light-theme');
             currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
             localStorage.setItem('theme', currentTheme);
-            themeToggle.textContent = currentTheme === 'light' ? 'Switch to Dark Theme' : 'Switch to Light Theme';
+            themeToggle.textContent = currentTheme === 'light' ? 'Light Theme' : 'Dark Theme';
         });
     }
 
@@ -48,27 +50,42 @@ document.addEventListener('DOMContentLoaded', () => {
             time_24hr: false,
             locale: "en",
             defaultDate: new Date(),
-            onChange: function(selectedDates, dateStr) {
+            onChange: function(selectedDates, dateStr, instance) {
                 if (selectedDates.length > 0) {
                     console.log('Selected reminder:', dateStr);
+                    instance.close();
                 }
             },
-            onClose: function() {
+            onOpen: function(selectedDates, dateStr, instance) {
+                instance.calendarContainer.style.animation = 'slideIn 0.3s ease-out';
+            },
+            onClose: function(selectedDates, dateStr, instance) {
                 reminderInput.style.display = 'none';
+                reminderInput.style.opacity = '0';
             }
         });
 
         calendarIcon.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            reminderInput.style.display = 'block';
-            flatpickrInstance.open();
+            if (reminderInput.style.display === 'none' || reminderInput.style.opacity === '0') {
+                reminderInput.style.display = 'block';
+                reminderInput.style.opacity = '0';
+                setTimeout(() => {
+                    reminderInput.style.transition = 'opacity 0.3s ease';
+                    reminderInput.style.opacity = '1';
+                }, 10);
+                flatpickrInstance.open();
+            }
         });
 
         document.addEventListener('click', (e) => {
             if (!calendarIcon.contains(e.target) && !reminderInput.contains(e.target)) {
-                reminderInput.style.display = 'none';
-                flatpickrInstance.close();
+                reminderInput.style.opacity = '0';
+                setTimeout(() => {
+                    reminderInput.style.display = 'none';
+                    flatpickrInstance.close();
+                }, 300);
             }
         });
     }
@@ -96,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
             taskInput.value = '';
             reminderInput.value = '';
             reminderInput.style.display = 'none';
+            reminderInput.style.opacity = '0';
         });
     }
 
@@ -143,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (!isNaN(reminderDate.getTime())) {
                         const reminderDisplay = document.createElement('span');
                         reminderDisplay.classList.add('reminder-time');
-                        reminderDisplay.textContent = `Reminder: ${reminderDate.toLocaleString('en-US', {
+                        reminderDisplay.textContent = ` - Reminder: ${reminderDate.toLocaleString('en-US', {
                             month: '2-digit',
                             day: '2-digit',
                             year: 'numeric',

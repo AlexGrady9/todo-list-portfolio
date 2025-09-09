@@ -99,27 +99,6 @@ body {
     }
 }
 
-#theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 6px 12px;
-    background: var(--primary-btn-bg);
-    color: white;
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: background 0.3s, transform 0.2s;
-    z-index: 1000;
-}
-
-#theme-toggle:hover {
-    background: var(--primary-btn-hover);
-    transform: translateY(-2px);
-}
-
 .container {
     background: var(--container-bg);
     padding: 30px;
@@ -142,6 +121,27 @@ h1 {
     color: var(--text-color);
     font-size: 2rem;
     margin: 0;
+}
+
+#theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 6px 12px;
+    background: var(--primary-btn-bg);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.3s, transform 0.2s;
+    z-index: 1000;
+}
+
+#theme-toggle:hover {
+    background: var(--primary-btn-hover);
+    transform: translateY(-2px);
 }
 
 #task-form {
@@ -281,5 +281,7 @@ button:hover {
     #theme-toggle {
         top: 15px;
         right: 15px;
+        padding: 4px 8px;
+        font-size: 0.8rem;
     }
 }

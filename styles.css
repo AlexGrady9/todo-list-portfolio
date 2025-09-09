@@ -1,43 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
-:root {
-    --background: linear-gradient(135deg, #1e1e2f 0%, #27293d 100%);
-    --container-bg: #2a2a3c;
-    --input-bg: #35354f;
-    --input-focus-bg: #404060;
-    --text-color: #e0e0e0;
-    --placeholder-color: #a0a0b0;
-    --primary-btn-bg: #6366f1;
-    --primary-btn-hover: #5457d6;
-    --complete-btn-bg: #10b981;
-    --complete-btn-hover: #0d8f6b;
-    --delete-btn-bg: #ef4444;
-    --delete-btn-hover: #dc2626;
-    --task-bg: #35354f;
-    --task-completed-bg: #2c2c40;
-    --task-completed-text: #70708f;
-    --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-body.light-theme {
-    --background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
-    --container-bg: #ffffff;
-    --input-bg: #f1f3f5;
-    --input-focus-bg: #e9ecef;
-    --text-color: #333333;
-    --placeholder-color: #6b7280;
-    --primary-btn-bg: #4f46e5;
-    --primary-btn-hover: #4338ca;
-    --complete-btn-bg: #059669;
-    --complete-btn-hover: #047857;
-    --delete-btn-bg: #dc2626;
-    --delete-btn-hover: #b91c1c;
-    --task-bg: #f1f3f5;
-    --task-completed-bg: #e5e7eb;
-    --task-completed-text: #6b7280;
-    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
 body {
     font-family: 'Poppins', sans-serif;
     background: var(--background);

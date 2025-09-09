@@ -1,19 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     const taskForm = document.getElementById('task-form');
     const taskInput = document.getElementById('task-input');
-    const reminderInput = document.createElement('input'); // динамический скрытый input
+
+    // Создаем скрытый input для Flatpickr
+    const reminderInput = document.createElement('input');
     reminderInput.type = 'text';
     reminderInput.id = 'reminder-input';
     reminderInput.style.display = 'none';
-    reminderInput.style.position = 'absolute';
-    reminderInput.style.opacity = '0';
     document.querySelector('.reminder-wrapper').appendChild(reminderInput);
 
     const calendarIcon = document.querySelector('.calendar-icon');
     const taskList = document.getElementById('task-list');
     const motivationToast = document.getElementById('motivation-toast');
     const themeToggle = document.getElementById('theme-toggle');
-    const confettiContainer = document.getElementById('confetti-container');
 
     const motivationalMessages = [
         "Great job! Keep it up!",
@@ -26,67 +25,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Тема
     let currentTheme = localStorage.getItem('theme') || 'dark';
+    document.body.classList.toggle('dark-theme', currentTheme === 'dark');
     document.body.classList.toggle('light-theme', currentTheme === 'light');
-    if (themeToggle) themeToggle.textContent = currentTheme === 'light' ? '☀️' : '🌙';
+    themeToggle.textContent = currentTheme === 'light' ? '☀️' : '🌙';
 
-    if (themeToggle) {
-        themeToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.body.classList.toggle('light-theme');
-            currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
-            localStorage.setItem('theme', currentTheme);
-            themeToggle.textContent = currentTheme === 'light' ? '☀️' : '🌙';
-        });
-    }
+    themeToggle.addEventListener('click', e => {
+        e.preventDefault();
+        document.body.classList.toggle('light-theme');
+        document.body.classList.toggle('dark-theme');
+        currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+        localStorage.setItem('theme', currentTheme);
+        themeToggle.textContent = currentTheme === 'light' ? '☀️' : '🌙';
+    });
 
-    // Flatpickr для иконки календаря
-    if (reminderInput && calendarIcon) {
-        const flatpickrInstance = flatpickr(reminderInput, {
-            enableTime: true,
-            dateFormat: "m/d/Y h:i K",
-            time_24hr: false,
-            locale: "en",
-            defaultDate: new Date(),
-            minDate: null, // разрешаем любую дату
-            onChange: function(selectedDates, dateStr, instance) {
-                if (selectedDates.length > 0) {
-                    console.log('Selected reminder:', dateStr);
-                    instance.close();
-                }
-            },
-            onOpen: function(selectedDates, dateStr, instance) {
-                instance.calendarContainer.style.animation = 'slideIn 0.3s ease-out';
-            },
-            onClose: function(selectedDates, dateStr, instance) {
-                reminderInput.style.display = 'none';
-                reminderInput.style.opacity = '0';
-            }
-        });
+    // Flatpickr для календаря
+    const flatpickrInstance = flatpickr(reminderInput, {
+        enableTime: true,
+        dateFormat: "m/d/Y h:i K",
+        defaultDate: new Date(),
+        minDate: "today"
+    });
 
-        calendarIcon.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            if (reminderInput.style.display === 'none' || reminderInput.style.opacity === '0') {
-                reminderInput.style.display = 'block';
-                reminderInput.style.opacity = '0';
-                setTimeout(() => {
-                    reminderInput.style.transition = 'opacity 0.3s ease';
-                    reminderInput.style.opacity = '1';
-                }, 10);
-                flatpickrInstance.open();
-            }
-        });
+    calendarIcon.addEventListener('click', e => {
+        e.stopPropagation();
+        reminderInput.style.display = 'block';
+        flatpickrInstance.open();
+    });
 
-        document.addEventListener('click', (e) => {
-            if (!calendarIcon.contains(e.target) && !reminderInput.contains(e.target)) {
-                reminderInput.style.opacity = '0';
-                setTimeout(() => {
-                    reminderInput.style.display = 'none';
-                    flatpickrInstance.close();
-                }, 300);
-            }
-        });
-    }
+    document.addEventListener('click', e => {
+        if (!calendarIcon.contains(e.target) && !reminderInput.contains(e.target)) {
+            reminderInput.style.display = 'none';
+            flatpickrInstance.close();
+        }
+    });
 
     // Разрешение уведомлений
     if ("Notification" in window && Notification.permission !== "granted") {
@@ -95,129 +66,104 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Загрузка задач
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    let reminderTimers = [];
+
     renderTasks();
     setupReminders();
 
     // Добавление задачи
-    if (taskForm) {
-        taskForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const taskText = taskInput.value.trim();
-            if (!taskText) {
-                alert('Please provide a task description!');
-                return;
-            }
-            const reminderTime = reminderInput.value || null;
-            const newTask = { text: taskText, completed: false, reminder: reminderTime };
-            tasks.push(newTask);
-            saveTasks();
-            renderTasks();
-            setupReminders();
-            taskInput.value = '';
-            reminderInput.value = '';
-            reminderInput.style.display = 'none';
-            reminderInput.style.opacity = '0';
-        });
-    }
-
-    // Мотивация
-    function showMotivationMessage() {
-        const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
-        if (motivationToast) {
-            motivationToast.textContent = randomMessage;
-            motivationToast.classList.remove('fade-out');
-            motivationToast.classList.add('show');
-            setTimeout(() => {
-                motivationToast.classList.add('fade-out');
-                setTimeout(() => motivationToast.classList.remove('show'), 500);
-            }, 5000);
-        }
-
-        if (confettiContainer) {
-            confettiContainer.innerHTML = '';
-            for (let i = 0; i < 20; i++) {
-                const confetti = document.createElement('div');
-                confetti.classList.add('confetti');
-                confetti.style.left = `${Math.random() * 100}%`;
-                confetti.style.animationDelay = `${Math.random() * 0.5}s`;
-                confettiContainer.appendChild(confetti);
-            }
-            setTimeout(() => confettiContainer.innerHTML = '', 2000);
-        }
-    }
-
-    // Рендер задач
-    function renderTasks() {
-        if (taskList) {
-            taskList.innerHTML = '';
-            tasks.forEach((task, index) => {
-                const li = document.createElement('li');
-                li.classList.add('slide-in');
-                if (task.completed) li.classList.add('completed');
-
-                const taskContent = document.createElement('div');
-                taskContent.classList.add('task-content');
-                taskContent.textContent = task.text;
-
-                if (task.reminder) {
-                    const reminderDate = new Date(task.reminder);
-                    if (!isNaN(reminderDate.getTime())) {
-                        const reminderDisplay = document.createElement('span');
-                        reminderDisplay.classList.add('reminder-time');
-                        reminderDisplay.textContent = ` - Reminder: ${reminderDate.toLocaleString('en-US', {
-                            month: '2-digit',
-                            day: '2-digit',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: true
-                        })}`;
-                        taskContent.appendChild(reminderDisplay);
-                    }
-                }
-
-                const completeBtn = document.createElement('button');
-                completeBtn.textContent = task.completed ? 'Undo' : 'Complete';
-                completeBtn.onclick = (e) => {
-                    e.preventDefault();
-                    tasks[index].completed = !tasks[index].completed;
-                    if (tasks[index].completed) showMotivationMessage();
-                    saveTasks();
-                    renderTasks();
-                };
-
-                const deleteBtn = document.createElement('button');
-                deleteBtn.textContent = 'Delete';
-                deleteBtn.onclick = (e) => {
-                    e.preventDefault();
-                    tasks.splice(index, 1);
-                    saveTasks();
-                    renderTasks();
-                };
-
-                li.append(taskContent, completeBtn, deleteBtn);
-                taskList.appendChild(li);
-            });
-        }
-    }
+    taskForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const text = taskInput.value.trim();
+        if (!text) return alert('Please provide a task description!');
+        const reminderTime = reminderInput.value || null;
+        tasks.push({ text, completed: false, reminder: reminderTime });
+        taskInput.value = '';
+        reminderInput.value = '';
+        reminderInput.style.display = 'none';
+        saveTasks();
+        renderTasks();
+        setupReminders();
+    });
 
     // Сохранение задач
     function saveTasks() {
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }
 
+    // Рендер задач
+    function renderTasks() {
+        taskList.innerHTML = '';
+        tasks.forEach((task, index) => {
+            const li = document.createElement('li');
+            if (task.completed) li.classList.add('completed');
+
+            const taskContent = document.createElement('div');
+            taskContent.textContent = task.text;
+
+            if (task.reminder) {
+                const date = new Date(task.reminder);
+                if (!isNaN(date)) {
+                    taskContent.textContent += ` - Reminder: ${date.toLocaleString()}`;
+                }
+            }
+
+            const completeBtn = document.createElement('button');
+            completeBtn.textContent = task.completed ? 'Undo' : 'Complete';
+            completeBtn.onclick = e => {
+                e.preventDefault();
+                tasks[index].completed = !tasks[index].completed;
+                if (tasks[index].completed) showMotivationMessage();
+                saveTasks();
+                renderTasks();
+                setupReminders();
+            };
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.onclick = e => {
+                e.preventDefault();
+                tasks.splice(index, 1);
+                saveTasks();
+                renderTasks();
+                setupReminders();
+            };
+
+            li.append(taskContent, completeBtn, deleteBtn);
+            taskList.appendChild(li);
+        });
+    }
+
+    // Показ мотивационного сообщения
+    function showMotivationMessage() {
+        if (!motivationToast) return;
+        const message = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
+        motivationToast.textContent = message;
+        motivationToast.classList.add('show');
+        setTimeout(() => motivationToast.classList.remove('show'), 3000);
+    }
+
     // Настройка напоминаний
     function setupReminders() {
-        tasks.forEach((task, index) => {
+        // очищаем старые таймеры
+        reminderTimers.forEach(t => clearTimeout(t));
+        reminderTimers = [];
+
+        tasks.forEach(task => {
             if (task.reminder && !task.completed) {
                 const reminderTime = new Date(task.reminder).getTime();
-                const now = Date.now();
-                const delay = Math.max(reminderTime - now, 0); // если дата в прошлом, показываем сразу
-                setTimeout(() => {
-                    if (Notification.permission === 'granted' && !task.completed) {
-                        new Notification('Task Reminder', { body: task.text, icon: 'https://via.placeholder.com/32' });
-                    }
-                }, delay);
+                const delay = reminderTime - Date.now();
+                if (delay > 0) {
+                    const timer = setTimeout(() => {
+                        if (Notification.permission === 'granted') {
+                            new Notification('Task Reminder', {
+                                body: task.text,
+                                icon: 'https://via.placeholder.com/32'
+                            });
+                        }
+                    }, delay);
+                    reminderTimers.push(timer);
+                }
             }
         });
     }

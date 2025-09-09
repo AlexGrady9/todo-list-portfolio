@@ -4,30 +4,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToDo List with Reminders and Theme Switcher - Portfolio</title>
+    <title>ToDo List with Reminders</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 
 <body>
-    <div id="motivation-toast" class="motivation-toast"></div>
-    <button id="theme-toggle">Dark Theme</button>
+    <!-- Кнопка переключения темы вне контейнера -->
+    <button id="theme-toggle">🌙</button>
+
     <div class="container">
+        <div id="motivation-toast" class="motivation-toast"></div>
         <div id="confetti-container"></div>
+
         <div class="header">
-            <h1>ToDo List with Reminders</h1>
+            <h1>ToDo List</h1>
         </div>
+
         <form id="task-form">
             <input type="text" id="task-input" placeholder="Enter a new task...">
             <div class="reminder-wrapper">
-                <svg class="calendar-icon" ...> ... </svg>
+                <svg class="calendar-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                    fill="currentColor" viewBox="0 0 16 16">
+                    <path
+                        d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
+                </svg>
             </div>
-
             <button type="submit">Add</button>
         </form>
+
         <ul id="task-list"></ul>
     </div>
+
     <script src="script.js"></script>
 </body>
 

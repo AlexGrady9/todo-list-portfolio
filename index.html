@@ -1,43 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToDo List with Reminders</title>
+    <title>ToDo List with Reminders and Theme Switcher</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
-
 <body>
-    <!-- Кнопка переключения темы вне контейнера -->
+    <!-- Мотивационный тост -->
+    <div id="motivation-toast" class="motivation-toast"></div>
+
+    <!-- Кнопка переключения темы -->
     <button id="theme-toggle">🌙</button>
 
     <div class="container">
-        <div id="motivation-toast" class="motivation-toast"></div>
-        <div id="confetti-container"></div>
+        <h1>ToDo List with Reminders</h1>
 
-        <div class="header">
-            <h1>ToDo List</h1>
-        </div>
-
+        <!-- Форма задачи -->
         <form id="task-form">
-            <input type="text" id="task-input" placeholder="Enter a new task...">
-            <div class="reminder-wrapper">
-                <svg class="calendar-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                    fill="currentColor" viewBox="0 0 16 16">
-                    <path
-                        d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
-                </svg>
+            <div style="display:flex; align-items:center; gap:6px; flex:1;">
+                <input type="text" id="task-input" placeholder="Enter a new task...">
+                <div class="reminder-wrapper">
+                    <svg class="calendar-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10m-11 4h12m-12 4h12M4 21h16a1 1 0 001-1V7a1 1 0 00-1-1H4a1 1 0 00-1 1v13a1 1 0 001 1z"/>
+                    </svg>
+                </div>
             </div>
             <button type="submit">Add</button>
         </form>
 
+        <!-- Список задач -->
         <ul id="task-list"></ul>
     </div>
 
+    <!-- Скрипт -->
     <script src="script.js"></script>
 </body>
-
 </html>

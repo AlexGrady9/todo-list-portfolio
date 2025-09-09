@@ -1,7 +1,44 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+:root {
+    --background: #f9f9f9;
+    --container-bg: #ffffff;
+    --input-bg: #f0f0f0;
+    --input-focus-bg: #e8e8e8;
+    --text-color: #333333;
+    --placeholder-color: #777777;
+    --primary-btn-bg: #4a90e2;
+    --primary-btn-hover: #357abd;
+    --complete-btn-bg: #27ae60;
+    --complete-btn-hover: #219d52;
+    --delete-btn-bg: #e94e4e;
+    --delete-btn-hover: #d43f3f;
+    --task-bg: #f0f0f0;
+    --task-completed-bg: #e0e0e0;
+    --task-completed-text: #666666;
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --border-radius: 8px;
+}
+
+body.light-theme {
+    --background: #1e1e1e;
+    --container-bg: #2a2a2a;
+    --input-bg: #3a3a3a;
+    --input-focus-bg: #484848;
+    --text-color: #f9f9f9;
+    --placeholder-color: #aaaaaa;
+    --primary-btn-bg: #4a90e2;
+    --primary-btn-hover: #357abd;
+    --complete-btn-bg: #27ae60;
+    --complete-btn-hover: #219d52;
+    --delete-btn-bg: #e94e4e;
+    --delete-btn-hover: #d43f3f;
+    --task-bg: #3a3a3a;
+    --task-completed-bg: #484848;
+    --task-completed-text: #aaaaaa;
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     background: var(--background);
     color: var(--text-color);
     display: flex;
@@ -11,73 +48,126 @@ body {
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
-    transition: background 0.3s ease;
+    transition: background 0.3s, color 0.3s;
+    position: relative;
+}
+
+#motivation-toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--complete-btn-bg);
+    color: white;
+    padding: 15px 25px;
+    border-radius: var(--border-radius);
+    display: none;
+    z-index: 1000;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+#motivation-toast.show {
+    display: block;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+#motivation-toast.fade-out {
+    animation: fadeOut 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+    }
+}
+
+#theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 6px 12px;
+    background: var(--primary-btn-bg);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.3s, transform 0.2s;
+    z-index: 1000;
+}
+
+#theme-toggle:hover {
+    background: var(--primary-btn-hover);
+    transform: translateY(-2px);
 }
 
 .container {
     background: var(--container-bg);
     padding: 30px;
-    border-radius: 16px;
+    border-radius: var(--border-radius);
     box-shadow: var(--shadow);
     width: 100%;
     max-width: 500px;
-    position: relative;
-    transition: background 0.3s ease, transform 0.3s ease;
+    transition: background 0.3s;
 }
 
 .header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 h1 {
     text-align: center;
     color: var(--text-color);
     font-size: 2rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
     margin: 0;
-    transition: color 0.3s ease;
-}
-
-#theme-toggle {
-    padding: 12px 24px;
-    background: var(--primary-btn-bg);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: all 0.3s ease;
-    box-shadow: var(--shadow);
 }
 
 #task-form {
     display: flex;
-    gap: 10px;
+    gap: 15px;
     margin-bottom: 25px;
-    flex-wrap: wrap;
-    align-items: center;
 }
 
 #task-input {
     flex: 1;
     padding: 12px;
-    border: none;
-    border-radius: 8px;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
     background: var(--input-bg);
     color: var(--text-color);
     font-size: 1rem;
+    transition: background 0.3s;
 }
 
 #task-input:focus {
     outline: none;
     background: var(--input-focus-bg);
+}
+
+#task-input::placeholder {
+    color: var(--placeholder-color);
 }
 
 .reminder-wrapper {
@@ -86,29 +176,13 @@ h1 {
     align-items: center;
 }
 
-#reminder-input {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    z-index: 100;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    background: var(--input-bg);
-    color: var(--text-color);
-    font-size: 0.95rem;
-    font-weight: 500;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    transform: translateY(-10px);
-    width: 220px;
+.calendar-icon {
+    cursor: pointer;
+    transition: stroke 0.3s ease;
 }
 
-#reminder-input.visible {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateY(0);
+.calendar-icon:hover {
+    stroke: var(--primary-btn-bg);
 }
 
 button {
@@ -116,11 +190,11 @@ button {
     background: var(--primary-btn-bg);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     cursor: pointer;
     font-size: 1rem;
     font-weight: 500;
-    transition: background 0.3s ease, transform 0.2s ease;
+    transition: background 0.3s, transform 0.2s;
 }
 
 button:hover {
@@ -138,10 +212,10 @@ button:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
+    padding: 12px;
     background: var(--task-bg);
-    border-radius: 8px;
-    margin-bottom: 10px;
+    border-radius: var(--border-radius);
+    margin-bottom: 15px;
     transition: all 0.3s ease;
 }
 
@@ -149,6 +223,12 @@ button:hover {
     text-decoration: line-through;
     color: var(--task-completed-text);
     background: var(--task-completed-bg);
+}
+
+#task-list li button {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    margin-left: 15px;
 }
 
 #task-list li button:first-of-type {
@@ -167,79 +247,39 @@ button:hover {
     background: var(--delete-btn-hover);
 }
 
-.motivation-toast {
-    position: absolute;
-    top: -50px;
-    left: 50%;
-    transform: translateX(-50%) scale(0.5) rotate(-5deg);
-    background: var(--complete-btn-bg);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    z-index: 200;
-}
-
-.motivation-toast.show {
-    opacity: 1;
-    transform: translateX(-50%) scale(1) rotate(0deg);
-}
-
-#confetti-container {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    height: 100px;
-    pointer-events: none;
-    z-index: 150;
-}
-
-.confetti {
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    opacity: 0.8;
-    animation: confetti-fall 1.5s ease-out forwards;
-}
-
-@keyframes confetti-fall {
-    0% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 0.8;
-    }
-    100% {
-        transform: translateY(100px) rotate(720deg);
+/* Анимация появления задачи */
+@keyframes slideIn {
+    from {
         opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
-/* Прогресс-бар */
-.progress-container {
-    width: 100%;
-    height: 24px;
-    background: #ddd;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    overflow: hidden;
-}
+/* Адаптивность */
+@media (max-width: 500px) {
+    .container {
+        padding: 20px;
+    }
 
-.progress-bar {
-    height: 100%;
-    width: 0%;
-    background: var(--complete-btn-bg);
-    text-align: center;
-    color: white;
-    font-weight: bold;
-    line-height: 24px;
-    transition: width 0.4s ease;
-}
+    h1 {
+        font-size: 1.5rem;
+    }
 
-.progress-bar.glow {
-    box-shadow: 0 0 15px 3px var(--complete-btn-bg);
+    #task-form {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    #theme-toggle {
+        top: 15px;
+        right: 15px;
+    }
 }

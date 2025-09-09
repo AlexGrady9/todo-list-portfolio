@@ -1,12 +1,47 @@
 :root {
+    /* --- Темная тема (по умолчанию) --- */
+    --background: #1e1e1e;
+    --container-bg: #2c2c2c;
+    --input-bg: #3a3a3a;
+    --input-focus-bg: #4a4a4a;
+    --text-color: #e0e0e0;
+    --placeholder-color: #aaaaaa;
+    --primary-btn-bg: #6c63ff;
+    --primary-btn-hover: #574fd6;
+    --complete-btn-bg: #27ae60;
+    --complete-btn-hover: #219d52;
+    --delete-btn-bg: #e94e4e;
+    --delete-btn-hover: #d43f3f;
+    --task-bg: #3a3a3a;
+    --task-completed-bg: #555555;
+    --task-completed-text: #999999;
+    --border-radius: 9px;
+}
+
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--background);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* --- Светлая тема --- */
+body.light-theme {
     --background: #f9f9f9;
     --container-bg: #ffffff;
     --input-bg: #f5f5f5;
     --input-focus-bg: #eaeaea;
     --text-color: #333333;
     --placeholder-color: #888888;
-    --primary-btn-bg: #4a90e2;
-    --primary-btn-hover: #357abd;
+    --primary-btn-bg: #6c63ff;
+    --primary-btn-hover: #574fd6;
     --complete-btn-bg: #27ae60;
     --complete-btn-hover: #219d52;
     --delete-btn-bg: #e94e4e;
@@ -14,64 +49,27 @@
     --task-bg: #f5f5f5;
     --task-completed-bg: #e0e0e0;
     --task-completed-text: #666666;
-    --border-radius: 9px;
 }
 
-/* Тёмная тема */
-.dark-theme {
-    --background: #1e1e1e;
-    --container-bg: #2c2c2c;
-    --input-bg: #3a3a3a;
-    --input-focus-bg: #505050;
-    --text-color: #f0f0f0;
-    --placeholder-color: #aaaaaa;
-    --primary-btn-bg: #4a90e2;
-    --primary-btn-hover: #357abd;
-    --complete-btn-bg: #27ae60;
-    --complete-btn-hover: #219d52;
-    --delete-btn-bg: #e94e4e;
-    --delete-btn-hover: #d43f3f;
-    --task-bg: #3a3a3a;
-    --task-completed-bg: #505050;
-    --task-completed-text: #aaaaaa;
-}
-
-/* Базовые стили */
-body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: var(--background);
-    color: var(--text-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
-    position: relative;
-}
-
-/* Контейнер задач */
+/* --- Контейнер --- */
 .container {
+    background: var(--container-bg);
+    padding: 25px;
+    border-radius: var(--border-radius);
     width: 100%;
     max-width: 480px;
-    background: var(--container-bg);
-    border-radius: var(--border-radius);
-    padding: 25px;
-    box-sizing: border-box;
-    position: relative;
-    transition: background 0.3s;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: background 0.3s ease;
 }
 
-/* Заголовок */
+/* --- Заголовок --- */
 h1 {
     text-align: center;
     font-size: 1.8rem;
     margin-bottom: 20px;
 }
 
-/* Toast мотивации */
+/* --- Мотивационный тост --- */
 #motivation-toast {
     position: fixed;
     top: 15px;
@@ -92,26 +90,6 @@ h1 {
     transform: translateX(-50%) translateY(0);
 }
 
-/* Кнопка переключения темы */
-#theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-    padding: 10px 14px;
-    font-size: 1.2rem;
-    border: none;
-    border-radius: var(--border-radius);
-    background: var(--primary-btn-bg);
-    color: white;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-#theme-toggle:hover {
-    background: var(--primary-btn-hover);
-}
-
 /* --- Форма задач --- */
 #task-form {
     display: flex;
@@ -120,63 +98,91 @@ h1 {
     margin-bottom: 20px;
 }
 
-/* Поле ввода */
 #task-input {
-    flex: 1 1 auto;
-    padding: 12px;
-    font-size: 1rem;
-    border-radius: var(--border-radius);
+    flex: 1;
+    padding: 10px 12px;
     border: 1px solid #ccc;
+    border-radius: var(--border-radius);
     background: var(--input-bg);
-    transition: background 0.3s;
+    font-size: 1rem;
+    color: var(--text-color);
+    transition: background 0.3s ease, border 0.3s ease;
 }
 
 #task-input:focus {
     outline: none;
     background: var(--input-focus-bg);
+    border-color: var(--primary-btn-bg);
 }
 
-/* Контейнер календаря и кнопки Add */
+/* --- Иконка календаря --- */
 .reminder-wrapper {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
 }
 
-/* Кнопка календаря */
 .calendar-icon {
-    width: 26px;
-    height: 26px;
+    width: 22px;
+    height: 22px;
     cursor: pointer;
     stroke: var(--text-color);
-    margin-right: 6px;
-    flex-shrink: 0;
+    transition: stroke 0.3s ease;
 }
 
 .calendar-icon:hover {
     stroke: var(--primary-btn-bg);
 }
 
-/* Скрытый input для Flatpickr */
-#reminder-input {
-    display: none;
-    position: absolute;
-    opacity: 0;
-}
-
-/* Кнопка Add */
-#task-form button[type="submit"] {
-    padding: 12px 18px;
-    background: var(--primary-btn-bg);
-    color: white;
+/* --- Кнопки (Add, Complete, Delete, Theme) --- */
+#task-form button[type="submit"],
+#task-list li button,
+#theme-toggle {
     border: none;
     border-radius: var(--border-radius);
+    padding: 8px 14px;
+    font-size: 0.95rem;
     cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.3s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    color: white;
 }
 
+/* Add button */
+#task-form button[type="submit"] {
+    background: var(--primary-btn-bg);
+}
 #task-form button[type="submit"]:hover {
     background: var(--primary-btn-hover);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Complete button */
+#task-list li button:first-of-type {
+    background: var(--complete-btn-bg);
+}
+#task-list li button:first-of-type:hover {
+    background: var(--complete-btn-hover);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Delete button */
+#task-list li button:last-of-type {
+    background: var(--delete-btn-bg);
+}
+#task-list li button:last-of-type:hover {
+    background: var(--delete-btn-hover);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Theme toggle button */
+#theme-toggle {
+    background: var(--primary-btn-bg);
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 1000;
 }
 
 /* --- Список задач --- */
@@ -195,7 +201,7 @@ h1 {
     border-radius: var(--border-radius);
     margin-bottom: 12px;
     transition: all 0.3s ease;
-    animation: slideIn 0.3s ease forwards;
+    color: var(--text-color);
 }
 
 #task-list li.completed {
@@ -204,51 +210,28 @@ h1 {
     background: var(--task-completed-bg);
 }
 
-#task-list li button {
-    padding: 6px 12px;
-    font-size: 0.9rem;
-    margin-left: 10px;
-    border-radius: var(--border-radius);
+/* --- Адаптивность --- */
+@media (max-width: 500px) {
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    #task-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #task-form button[type="submit"] {
+        width: 100%;
+    }
 }
 
-#task-list li button:first-of-type {
-    background: var(--complete-btn-bg);
-}
-
-#task-list li button:first-of-type:hover {
-    background: var(--complete-btn-hover);
-}
-
-#task-list li button:last-of-type {
-    background: var(--delete-btn-bg);
-}
-
-#task-list li button:last-of-type:hover {
-    background: var(--delete-btn-hover);
-}
-
-/* Анимация появления */
+/* --- Анимация --- */
 @keyframes slideIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
-}
-
-/* --- Адаптивность --- */
-@media (max-width: 500px) {
-    .container { padding: 20px; }
-
-    #theme-toggle {
-        top: 15px;
-        right: 15px;
-        padding: 8px 12px;
-        font-size: 1rem;
-    }
-
-    h1 { font-size: 1.5rem; }
-
-    #task-form { flex-direction: column; align-items: stretch; }
-
-    #task-form button[type="submit"] { width: 100%; }
-
-    .reminder-wrapper { flex-direction: row; justify-content: flex-start; margin-bottom: 10px; }
 }

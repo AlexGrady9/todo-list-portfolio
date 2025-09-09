@@ -1,163 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
 :root {
-    --primary-bg: #2c2f33;
-    --secondary-bg: #23272a;
-    --text-color: #ffffff;
-    --primary-btn-bg: #7289da;
-    --complete-btn-bg: #43b581;
-    --shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    --background: linear-gradient(135deg, #1e1e2f 0%, #27293d 100%);
+    --container-bg: #2a2a3c;
+    --input-bg: #35354f;
+    --input-focus-bg: #404060;
+    --text-color: #e0e0e0;
+    --placeholder-color: #a0a0b0;
+    --primary-btn-bg: #6366f1;
+    --primary-btn-hover: #5457d6;
+    --complete-btn-bg: #10b981;
+    --complete-btn-hover: #0d8f6b;
+    --delete-btn-bg: #ef4444;
+    --delete-btn-hover: #dc2626;
+    --task-bg: #35354f;
+    --task-completed-bg: #2c2c40;
+    --task-completed-text: #70708f;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-[data-theme="light"] {
-    --primary-bg: #f5f6fa;
-    --secondary-bg: #ffffff;
-    --text-color: #2c2f33;
-    --primary-btn-bg: #7289da;
-    --complete-btn-bg: #43b581;
-    --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+body.light-theme {
+    --background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+    --container-bg: #ffffff;
+    --input-bg: #f1f3f5;
+    --input-focus-bg: #e9ecef;
+    --text-color: #333333;
+    --placeholder-color: #6b7280;
+    --primary-btn-bg: #4f46e5;
+    --primary-btn-hover: #4338ca;
+    --complete-btn-bg: #059669;
+    --complete-btn-hover: #047857;
+    --delete-btn-bg: #dc2626;
+    --delete-btn-hover: #b91c1c;
+    --task-bg: #f1f3f5;
+    --task-completed-bg: #e5e7eb;
+    --task-completed-text: #6b7280;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background: var(--primary-bg);
+    font-family: 'Poppins', sans-serif;
+    background: var(--background);
     color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
     margin: 0;
     padding: 20px;
-    transition: all 0.3s ease;
+    box-sizing: border-box;
+    transition: background 0.3s ease;
+}
+
+.container {
+    background: var(--container-bg);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 h1 {
     text-align: center;
-    margin-bottom: 20px;
-}
-
-#task-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-    justify-content: center;
-}
-
-#task-input {
-    padding: 8px;
-    font-size: 1rem;
-    border: 1px solid var(--text-color);
-    border-radius: 4px;
-    background: var(--secondary-bg);
     color: var(--text-color);
-    flex: 1;
-    min-width: 200px;
-}
-
-.calendar-icon {
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    stroke: var(--text-color);
-    z-index: 10;
-    transition: transform 0.2s;
-}
-
-.calendar-icon:hover {
-    transform: scale(1.1); /* Увеличение при наведении */
-}
-
-#add-task {
-    padding: 8px 16px;
-    background: var(--primary-btn-bg);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-}
-
-#add-task:hover {
-    background: #5b6eae;
-}
-
-#task-list {
-    list-style: none;
-    padding: 0;
-}
-
-#task-list li {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    background: var(--secondary-bg);
-    margin-bottom: 10px;
-    border-radius: 4px;
-    box-shadow: var(--shadow);
-}
-
-.task-content {
-    flex-grow: 1;
-}
-
-.completed .task-content {
-    text-decoration: line-through;
-    color: #888;
-}
-
-#task-list button {
-    padding: 5px 10px;
-    margin-left: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-}
-
-#task-list .complete-btn {
-    background: var(--complete-btn-bg);
-    color: white;
-}
-
-#task-list .delete-btn {
-    background: #f04747;
-    color: white;
-}
-
-#task-list button:hover {
-    opacity: 0.9;
-}
-
-#motivation-toast {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--complete-btn-bg);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    display: none;
-    z-index: 1000;
-    animation: zoomIn 0.5s ease, rotate 0.5s ease;
-}
-
-#motivation-toast.show {
-    display: block;
-}
-
-#confetti-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 999;
-}
-
-.confetti {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background: hsl(var(--hue, 0), 80%, 60%);
-    --hue: calc(360 * var(--index) / 20);
-    animation: fall 2s linear forwards;
+    font-size: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+    transition: color 0.3s ease;
 }
 
 #theme-toggle {
@@ -173,85 +93,191 @@ h1 {
     letter-spacing: 0.5px;
     transition: all 0.3s ease;
     box-shadow: var(--shadow);
-    animation: pulse 2s infinite ease-in-out;
-    display: block;
-    margin: 20px auto;
 }
 
-#theme-toggle:hover {
-    transform: scale(1.05);
+#task-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.02); }
-    100% { transform: scale(1); }
+#task-input {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: var(--input-bg);
+    color: var(--text-color);
+    font-size: 1rem;
 }
 
-@keyframes zoomIn {
-    from { transform: translateX(-50%) scale(0); }
-    to { transform: translateX(-50%) scale(1); }
+#task-input:focus {
+    outline: none;
+    background: var(--input-focus-bg);
 }
 
-@keyframes rotate {
-    from { transform: translateX(-50%) rotate(0deg); }
-    to { transform: translateX(-50%) rotate(360deg); }
+.reminder-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
 }
 
-@keyframes fall {
-    to { top: 100%; opacity: 0; }
+#reminder-input {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 100;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: var(--input-bg);
+    color: var(--text-color);
+    font-size: 0.95rem;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateY(-10px);
+    width: 220px;
 }
 
-/* Адаптивность для смартфонов (ширина до 600px) */
-@media (max-width: 600px) {
-    body {
-        padding: 10px;
-    }
+#reminder-input.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
 
-    h1 {
-        font-size: 1.5rem;
-        margin-bottom: 15px;
-    }
+button {
+    padding: 12px 20px;
+    background: var(--primary-btn-bg);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
 
-    #task-form {
-        flex-direction: column;
-        align-items: stretch;
-    }
+button:hover {
+    background: var(--primary-btn-hover);
+    transform: translateY(-2px);
+}
 
-    #task-input {
-        min-width: 100%;
-        margin-bottom: 10px;
-    }
+#task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
 
-    .calendar-icon {
-        width: 20px;
-        height: 20px;
-        margin-left: 10px;
-    }
+#task-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: var(--task-bg);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
 
-    #add-task {
-        width: 100%;
-    }
+#task-list li.completed {
+    text-decoration: line-through;
+    color: var(--task-completed-text);
+    background: var(--task-completed-bg);
+}
 
-    #task-list li {
-        flex-direction: column;
-        align-items: stretch;
-        padding: 8px;
-    }
+#task-list li button:first-of-type {
+    background: var(--complete-btn-bg);
+}
 
-    .task-content {
-        margin-bottom: 10px;
-    }
+#task-list li button:first-of-type:hover {
+    background: var(--complete-btn-hover);
+}
 
-    #task-list button {
-        width: 100%;
-        margin-left: 0;
-        margin-top: 5px;
-    }
+#task-list li button:last-of-type {
+    background: var(--delete-btn-bg);
+}
 
-    #theme-toggle {
-        width: 90%;
-        margin: 10px auto;
-        font-size: 0.9rem;
+#task-list li button:last-of-type:hover {
+    background: var(--delete-btn-hover);
+}
+
+.motivation-toast {
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.5) rotate(-5deg);
+    background: var(--complete-btn-bg);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    z-index: 200;
+}
+
+.motivation-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) scale(1) rotate(0deg);
+}
+
+#confetti-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 100px;
+    pointer-events: none;
+    z-index: 150;
+}
+
+.confetti {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    opacity: 0.8;
+    animation: confetti-fall 1.5s ease-out forwards;
+}
+
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.8;
     }
+    100% {
+        transform: translateY(100px) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* Прогресс-бар */
+.progress-container {
+    width: 100%;
+    height: 24px;
+    background: #ddd;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--complete-btn-bg);
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    line-height: 24px;
+    transition: width 0.4s ease;
+}
+
+.progress-bar.glow {
+    box-shadow: 0 0 15px 3px var(--complete-btn-bg);
 }

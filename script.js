@@ -1,20 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
     const taskForm = document.getElementById('task-form');
     const taskInput = document.getElementById('task-input');
-    const reminderInput = document.createElement('input');
-    reminderInput.type = 'text';
-    reminderInput.id = 'reminder-input';
-    reminderInput.style.display = 'none';
-    document.querySelector('.reminder-wrapper').appendChild(reminderInput);
-
-    const calendarIcon = document.querySelector('.calendar-icon');
     const taskList = document.getElementById('task-list');
     const motivationToast = document.getElementById('motivation-toast');
     const themeToggle = document.getElementById('theme-toggle');
 
+    // Скрытый input для Flatpickr
+    const reminderInput = document.createElement('input');
+    reminderInput.type = 'text';
+    reminderInput.id = 'reminder-input';
+    reminderInput.style.position = 'absolute';
+    reminderInput.style.opacity = '0';
+    reminderInput.style.width = '100px';
+    reminderInput.style.height = '40px';
+    document.querySelector('.reminder-wrapper').appendChild(reminderInput);
+
+    const calendarIcon = document.querySelector('.calendar-icon');
+
+    // Загрузка задач
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
-    // Темы
+    // --- Темы ---
     let currentTheme = localStorage.getItem('theme') || 'dark';
     document.body.classList.toggle('light-theme', currentTheme === 'light');
     themeToggle.textContent = currentTheme === 'light' ? '☀️' : '🌙';
@@ -26,13 +32,13 @@ document.addEventListener('DOMContentLoaded', () => {
         themeToggle.textContent = currentTheme === 'light' ? '☀️' : '🌙';
     });
 
-    // Flatpickr для календаря (любая дата)
+    // --- Flatpickr календарь ---
     const flatpickrInstance = flatpickr(reminderInput, {
         enableTime: true,
         dateFormat: "m/d/Y h:i K",
         time_24hr: false,
         defaultDate: new Date(),
-        minDate: null
+        minDate: null // можно выбрать любую дату
     });
 
     calendarIcon.addEventListener('click', (e) => {
@@ -48,14 +54,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Разрешение уведомлений
+    // --- Разрешение уведомлений ---
     if ("Notification" in window && Notification.permission !== "granted") {
         Notification.requestPermission();
     }
 
-    // Рендер и сохранение
-    function saveTasks() { localStorage.setItem('tasks', JSON.stringify(tasks)); }
+    // --- Мотивационные сообщения ---
+    const messages = [
+        "Great job! Keep it up!",
+        "You're crushing it!",
+        "One step closer to your goals!",
+        "Amazing work! Stay focused!",
+        "You're unstoppable today!",
+        "Nice one! Keep pushing forward!"
+    ];
 
+    function showMotivation() {
+        const msg = messages[Math.floor(Math.random() * messages.length)];
+        motivationToast.textContent = msg;
+        motivationToast.classList.add('show');
+        setTimeout(() => motivationToast.classList.remove('show'), 4000);
+    }
+
+    // --- Сохранение задач ---
+    function saveTasks() {
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    // --- Рендер задач ---
     function renderTasks() {
         taskList.innerHTML = '';
         tasks.forEach((task, index) => {
@@ -94,12 +120,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Напоминания
+    // --- Настройка напоминаний ---
     function setupReminders() {
         tasks.forEach((task, index) => {
             if (task.reminder && !task.completed) {
                 const delay = new Date(task.reminder).getTime() - Date.now();
-                if (delay > 0) {
+                if (delay >= 0) {
                     setTimeout(() => {
                         if (Notification.permission === 'granted' && !tasks[index].completed) {
                             new Notification('Task Reminder', { body: task.text });
@@ -110,27 +136,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Мотивация
-    const messages = [
-        "Great job! Keep it up!",
-        "You're crushing it!",
-        "One step closer to your goals!",
-        "Amazing work! Stay focused!",
-        "You're unstoppable today!",
-        "Nice one! Keep pushing forward!"
-    ];
-
-    function showMotivation() {
-        const msg = messages[Math.floor(Math.random() * messages.length)];
-        motivationToast.textContent = msg;
-        motivationToast.classList.add('show');
-        setTimeout(() => motivationToast.classList.remove('show'), 4000);
-    }
-
+    // --- Добавление задачи ---
     taskForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const text = taskInput.value.trim();
         if (!text) return alert('Please enter a task');
+
         tasks.push({ text, completed: false, reminder: reminderInput.value || null });
         taskInput.value = '';
         reminderInput.value = '';

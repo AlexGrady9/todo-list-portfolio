@@ -10,6 +10,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressBar = document.getElementById('progress-bar');
     const progressContainer = document.getElementById('progress-container');
 
+    
+    flatpickr("#reminder-input", {
+    enableTime: true,
+    dateFormat: "m/d/Y h:i K",
+    time_24hr: false,
+    locale: "en",
+    defaultDate: new Date() // Устанавливает текущую дату (09/09/2025, 08:37 PM KST)
+    });
+
+    
     // Flatpickr календарь на английском
     flatpickr("#reminder-input", {
         enableTime: true,
@@ -56,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
             reminderInput.classList.remove('visible');
         }
     });
+
 
     taskForm.addEventListener('submit', (e) => {
         e.preventDefault();

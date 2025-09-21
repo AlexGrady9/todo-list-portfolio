@@ -1,0 +1,132 @@
+/* Tailwind CSS import */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom application styles */
+
+/* Main background with gradient */
+body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+/* Glass effect card style */
+.card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+/* Hover effect for interactivity */
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Primary button with gradient */
+.btn-primary {
+  background: linear-gradient(to right, #8b5cf6, #4f46e5);
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+/* Button hover effect */
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* Input field style */
+.input-field {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+/* Input field focus */
+.input-field:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #8b5cf6;
+  border-color: transparent;
+}
+
+.task-card {
+  background: linear-gradient(to bottom right, #eff6ff, #e0e7ff);
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  border-left: 4px solid #60a5fa;
+  transition: all 0.3s ease;
+  cursor: grab;
+}
+
+.task-card:active {
+  cursor: grabbing;
+}
+
+.task-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.column {
+  background: rgba(249, 250, 251, 0.8);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  min-height: 24rem;
+  border: 2px dashed #d1d5db;
+  transition: all 0.3s ease;
+}
+
+.column.over {
+  border-color: #8b5cf6;
+  background: rgba(245, 243, 255, 0.8);
+}
+
+/* Victory toast animations - took forever to get the bounce just right! */
+@keyframes slideInBounce {
+  0% {
+    opacity: 0;
+    transform: translateX(100%) scale(0.8); /* Start way off screen, tiny */
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(-10px) scale(1.1); /* Overshoot a bit, get bigger */
+  }
+  80% {
+    transform: translateX(5px) scale(0.95); /* Bounce back, shrink slightly */
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1); /* Perfect landing */
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1); /* Normal size */
+  }
+  50% {
+    transform: scale(1.05); /* Breathe in... breathe out... */
+  }
+}
+
+.motivational-toast {
+  /* Double animation combo - slide in with style, then gentle pulse */
+  animation: slideInBounce 0.6s ease-out, pulse 2s infinite;
+}
+
+.motivational-toast:hover {
+  /* Freeze the animation when hovering - let people read in peace */
+  animation-play-state: paused;
+}

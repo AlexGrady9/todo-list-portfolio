@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
@@ -60,7 +60,7 @@ Base.metadata.create_all(bind=engine)
 
 class UserCreate(BaseModel):
     """Schema for registering a new user."""
-    email: str
+    email: EmailStr
     password: str  # Will be hashed before saving
 
 

@@ -99,7 +99,8 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000",
-                   "https://your-todo-app.vercel.app"],  # Frontend domains
+                   # Frontend domains
+                   "https://todo-list-portfolio-o36lmy3ce-alexs-projects-91533f9e.vercel.app"],
     # Allow cookies and tokens
     allow_credentials=True,
     # Allow all HTTP methods

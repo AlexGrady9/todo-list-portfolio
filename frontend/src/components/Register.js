@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../App';
 
+const API_BASE_URL = 'https://your-backend-url.onrender.com'; // Replace with your Render URL
+
 const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,9 +15,9 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8006/register', { email, password });
+      await axios.post(`${API_BASE_URL}/register`, { email, password });
       // After register, login
-      const response = await axios.post('http://localhost:8006/token', new URLSearchParams({
+      const response = await axios.post(`${API_BASE_URL}/token`, new URLSearchParams({
         username: email,
         password: password,
       }));

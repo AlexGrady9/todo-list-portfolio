@@ -8,6 +8,8 @@ import Task from './Task';
 import MotivationalToast from './MotivationalToast'; // Our motivator
 import useMotivationalSound from '../hooks/useMotivationalSound'; // Victory sounds
 
+const API_BASE_URL = 'https://your-backend-url.onrender.com'; // Replace with your Render URL
+
 const Board = () => {
   // Get board ID from URL - like our home address
   const { id } = useParams();
@@ -32,7 +34,7 @@ const Board = () => {
   // Grab task list from server
   const fetchTasks = async () => {
     try {
-      const response = await axios.get(`http://localhost:8006/tasks?board_id=${id}`, {
+      const response = await axios.get(`${API_BASE_URL}/tasks?board_id=${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTasks(response.data);
@@ -42,7 +44,7 @@ const Board = () => {
   };  // Create new task
   const createTask = async () => {
     try {
-      await axios.post('http://localhost:8006/tasks', { 
+      await axios.post(`${API_BASE_URL}/tasks`, { 
         title, 
         description, 
         board_id: parseInt(id) 
@@ -61,7 +63,7 @@ const Board = () => {
   const deleteTask = async (taskId) => {
     if (!window.confirm('Are you sure you want to delete this task?')) return; // Last chance to change mind
     try {
-      await axios.delete(`http://localhost:8006/tasks/${taskId}`, {
+      await axios.delete(`${API_BASE_URL}/tasks/${taskId}`, {
         headers: { Authorization: `Bearer ${token}` }, // Delete with full responsibility
       });
       fetchTasks(); // Update list - forgive the task forever
@@ -80,7 +82,7 @@ const Board = () => {
   // Save changes - fix the result of creativity
   const saveEditTask = async () => {
     try {
-      await axios.put(`http://localhost:8006/tasks/${editingTask}`, {
+      await axios.put(`${API_BASE_URL}/tasks/${editingTask}`, {
         title: editTitle,
         description: editDescription
       }, {
@@ -105,7 +107,7 @@ const Board = () => {
   // Update task status via drag-and-drop
   const updateTaskStatus = async (taskId, status) => {
     try {
-      await axios.put(`http://localhost:8006/tasks/${taskId}`, { status }, {
+      await axios.put(`${API_BASE_URL}/tasks/${taskId}`, { status }, {
         headers: { Authorization: `Bearer ${token}` },
       });
       

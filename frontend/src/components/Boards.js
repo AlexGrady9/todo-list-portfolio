@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../App';
 
+const API_BASE_URL = 'https://your-backend-url.onrender.com'; // Replace with your Render URL
+
 const Boards = () => {
   const [boards, setBoards] = useState([]);
   const [title, setTitle] = useState('');
@@ -18,7 +20,7 @@ const Boards = () => {
   // Get all boards from the server
   const fetchBoards = async () => {
     try {
-      const response = await axios.get('http://localhost:8006/boards', {
+      const response = await axios.get(`${API_BASE_URL}/boards`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setBoards(response.data);
@@ -31,7 +33,7 @@ const Boards = () => {
   const deleteBoard = async (boardId) => {
     if (!window.confirm('Are you sure you want to delete this board and all its tasks?')) return;
     try {
-      await axios.delete(`http://localhost:8006/boards/${boardId}`, {
+      await axios.delete(`${API_BASE_URL}/boards/${boardId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchBoards();
@@ -43,7 +45,7 @@ const Boards = () => {
   // Create a new board
   const createBoard = async () => {
     try {
-      await axios.post('http://localhost:8006/boards', { title }, {
+      await axios.post(`${API_BASE_URL}/boards`, { title }, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTitle('');
@@ -60,7 +62,7 @@ const Boards = () => {
 
   const saveEditBoard = async () => {
     try {
-      await axios.put(`http://localhost:8006/boards/${editingBoard}`, { title: editTitle }, {
+      await axios.put(`${API_BASE_URL}/boards/${editingBoard}`, { title: editTitle }, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setEditingBoard(null);
